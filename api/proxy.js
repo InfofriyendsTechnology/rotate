@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-// ── MongoDB Connection ──
 let isConnected = false;
 async function connectDB() {
     if (isConnected) return;
@@ -8,14 +7,12 @@ async function connectDB() {
     isConnected = true;
 }
 
-// ── Schema ──
 const KeySchema = new mongoose.Schema({
     name: String,
     value: String,
     depleted: { type: Boolean, default: false },
     addedAt: { type: Date, default: Date.now },
 });
-
 const MetaSchema = new mongoose.Schema({
     currentIdx: { type: Number, default: 0 },
 });
@@ -23,27 +20,66 @@ const MetaSchema = new mongoose.Schema({
 const Key = mongoose.models.Key || mongoose.model("Key", KeySchema);
 const Meta = mongoose.models.Meta || mongoose.model("Meta", MetaSchema);
 
-// ── Get next valid key ──
 async function getNextKey() {
     const keys = await Key.find({ depleted: false });
     if (!keys.length) return null;
-
     let meta = await Meta.findOne();
-    if (!meta) { meta = await Meta.create({ currentIdx: 0 }); }
-
+    if (!meta) meta = await Meta.create({ currentIdx: 0 });
     const idx = meta.currentIdx % keys.length;
     return keys[idx];
 }
 
-// ── Mark key depleted ──
 async function markDepleted(keyId) {
     await Key.findByIdAndUpdate(keyId, { depleted: true });
-    // Move to next
     let meta = await Meta.findOne();
     if (meta) { meta.currentIdx += 1; await meta.save(); }
 }
 
-// ── Main Handler ──
+// ── OpenAI → Anthropic convert ──
+function toAnthropic(body) {
+    const messages = body.messages || [];
+    let system = "";
+    const filtered = messages.filter(m => {
+        if (m.role === "system") { system = m.content; return false; }
+        return true;
+    });
+    const result = {
+        model: "claude-sonnet-4-5-20251001",
+        max_tokens: body.max_tokens || body.max_completion_tokens || 8096,
+        messages: filtered.map(m => ({
+            role: m.role === "assistant" ? "assistant" : "user",
+            content: typeof m.content === "string" ? m.content :
+                Array.isArray(m.content) ? m.content.map(c =>
+                    c.type === "text" ? { type: "text", text: c.text } : c
+                ) : String(m.content)
+        })),
+    };
+    if (system) result.system = system;
+    if (body.temperature) result.temperature = body.temperature;
+    if (body.stream) result.stream = body.stream;
+    return result;
+}
+
+// ── Anthropic → OpenAI convert ──
+function toOpenAI(data) {
+    return {
+        id: "chatcmpl-" + Date.now(),
+        object: "chat.completion",
+        created: Math.floor(Date.now() / 1000),
+        model: data.model || "claude-sonnet-4-5-20251001",
+        choices: [{
+            index: 0,
+            message: { role: "assistant", content: data.content?.[0]?.text || "" },
+            finish_reason: data.stop_reason === "end_turn" ? "stop" : (data.stop_reason || "stop")
+        }],
+        usage: {
+            prompt_tokens: data.usage?.input_tokens || 0,
+            completion_tokens: data.usage?.output_tokens || 0,
+            total_tokens: (data.usage?.input_tokens || 0) + (data.usage?.output_tokens || 0)
+        }
+    };
+}
+
 export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
@@ -53,7 +89,7 @@ export default async function handler(req, res) {
 
     await connectDB();
 
-    // ── GET /api/proxy — Status check ──
+    // ── Status ──
     if (req.method === "GET") {
         const keys = await Key.find();
         const active = await getNextKey();
@@ -66,16 +102,16 @@ export default async function handler(req, res) {
         });
     }
 
-    // ── POST — Forward to Anthropic ──
-    const keyObj = await getNextKey();
+    if (req.method !== "POST") return res.status(405).end();
 
+    // ── Format detect — OpenAI (Cursor) ya Anthropic (Cline)? ──
+    const isOpenAI = !req.headers["anthropic-version"] && req.body?.messages;
+    const anthropicBody = isOpenAI ? toAnthropic(req.body) : req.body;
+
+    // ── Get key ──
+    const keyObj = await getNextKey();
     if (!keyObj) {
-        return res.status(429).json({
-            error: {
-                type: "all_keys_depleted",
-                message: "Badhi API keys khatam! Site pe ja ne navi keys nakho.",
-            },
-        });
+        return res.status(429).json({ error: { message: "Badhi keys khatam! Site pe ja ne navi nakho.", code: "insufficient_quota" } });
     }
 
     try {
@@ -85,47 +121,33 @@ export default async function handler(req, res) {
                 "Content-Type": "application/json",
                 "x-api-key": keyObj.value,
                 "anthropic-version": "2023-06-01",
-                ...(req.headers["anthropic-beta"] && {
-                    "anthropic-beta": req.headers["anthropic-beta"],
-                }),
             },
-            body: JSON.stringify(req.body),
+            body: JSON.stringify(anthropicBody),
         });
 
         const data = await response.json();
 
-        // Key depleted or invalid?
+        // Key depleted?
         if (
             data?.error?.message?.toLowerCase().includes("credit") ||
             data?.error?.message?.toLowerCase().includes("balance") ||
             response.status === 401
         ) {
-            console.log(`⛔ Key depleted: ${keyObj.name}`);
             await markDepleted(keyObj._id);
-
-            // Retry with next key
             const nextKey = await getNextKey();
-            if (!nextKey) {
-                return res.status(429).json({
-                    error: { message: "Badhi keys khatam! Navi nakho." },
-                });
-            }
+            if (!nextKey) return res.status(429).json({ error: { message: "Badhi keys khatam!" } });
 
             const retry = await fetch("https://api.anthropic.com/v1/messages", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-api-key": nextKey.value,
-                    "anthropic-version": "2023-06-01",
-                },
-                body: JSON.stringify(req.body),
+                headers: { "Content-Type": "application/json", "x-api-key": nextKey.value, "anthropic-version": "2023-06-01" },
+                body: JSON.stringify(anthropicBody),
             });
-
             const retryData = await retry.json();
-            return res.status(retry.status).json(retryData);
+            return res.status(retry.status).json(isOpenAI ? toOpenAI(retryData) : retryData);
         }
 
-        return res.status(response.status).json(data);
+        return res.status(response.status).json(isOpenAI ? toOpenAI(data) : data);
+
     } catch (e) {
         return res.status(500).json({ error: { message: "Server error: " + e.message } });
     }
