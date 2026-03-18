@@ -1,710 +1,1562 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>API Vault v3 — Ultimate</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-[data-theme="dark"]{
-  --bg:#07090f;--surface:#0e1117;--surface2:#151a24;--surface3:#1c2333;
-  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
-  --accent:#00f5a0;--accent2:#00c8f5;--warn:#f5c400;--danger:#ff4d6d;
-  --text:#dde4f0;--muted:#4a5568;--text2:#8892a4;
-}
-[data-theme="light"]{
-  --bg:#f0f4f8;--surface:#ffffff;--surface2:#f8fafc;--surface3:#edf2f7;
-  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.15);
-  --accent:#00a86b;--accent2:#0096c7;--warn:#d4a017;--danger:#e63946;
-  --text:#1a202c;--muted:#718096;--text2:#4a5568;
-}
-body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;min-height:100vh;transition:background 0.3s,color 0.3s}
-.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:40px 40px;opacity:0.5}
-[data-theme="light"] .bg-grid{opacity:0.3}
-.bg-glow{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 50% 40% at 20% 10%,rgba(0,245,160,0.05) 0%,transparent 60%),radial-gradient(ellipse 40% 30% at 80% 90%,rgba(0,200,245,0.05) 0%,transparent 60%)}
-[data-theme="light"] .bg-glow{background:radial-gradient(ellipse 50% 40% at 20% 10%,rgba(0,168,107,0.08) 0%,transparent 60%),radial-gradient(ellipse 40% 30% at 80% 90%,rgba(0,150,199,0.08) 0%,transparent 60%)}
-.app{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:28px 20px 80px}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Vault v3 — Ultimate</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
 
-/* HEADER */
-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;padding-bottom:18px;border-bottom:1px solid var(--border)}
-.logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--accent);display:flex;align-items:center;gap:8px;letter-spacing:0.1em}
-.logo-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);animation:blink 2s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
-.header-right{display:flex;gap:8px;align-items:center}
-.vtag{font-size:10px;background:rgba(0,245,160,0.1);border:1px solid rgba(0,245,160,0.2);color:var(--accent);padding:3px 9px;border-radius:100px;letter-spacing:0.1em}
+    [data-theme="dark"] {
+      --bg: #07090f;
+      --surface: #0e1117;
+      --surface2: #151a24;
+      --surface3: #1c2333;
+      --border: rgba(255, 255, 255, 0.07);
+      --border2: rgba(255, 255, 255, 0.12);
+      --accent: #00f5a0;
+      --accent2: #00c8f5;
+      --warn: #f5c400;
+      --danger: #ff4d6d;
+      --text: #dde4f0;
+      --muted: #4a5568;
+      --text2: #8892a4;
+    }
 
-/* STATS */
-.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:13px 15px;transition:border-color 0.2s,transform 0.15s}
-.stat-card:hover{border-color:var(--border2);transform:translateY(-1px)}
-.stat-label{font-size:9px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px}
-.stat-value{font-size:24px;font-weight:700}
-.sv-g{color:var(--accent)}.sv-b{color:var(--accent2)}.sv-y{color:var(--warn)}.sv-r{color:var(--danger)}.sv-m{color:#c084fc}
+    [data-theme="light"] {
+      --bg: #f0f4f8;
+      --surface: #ffffff;
+      --surface2: #f8fafc;
+      --surface3: #edf2f7;
+      --border: rgba(0, 0, 0, 0.08);
+      --border2: rgba(0, 0, 0, 0.15);
+      --accent: #00a86b;
+      --accent2: #0096c7;
+      --warn: #d4a017;
+      --danger: #e63946;
+      --text: #1a202c;
+      --muted: #718096;
+      --text2: #4a5568;
+    }
 
-/* ACTIVE BANNER */
-.active-banner{background:var(--surface);border:1px solid rgba(0,245,160,0.2);border-radius:12px;padding:16px 20px;margin-bottom:16px;position:relative;overflow:hidden}
-.active-banner::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
-.banner-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.banner-label{font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase}
-.live-dot{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--accent)}
-.live-dot span{width:5px;height:5px;border-radius:50%;background:var(--accent);animation:blink 1.5s infinite}
-.key-display{background:rgba(0,0,0,0.2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;font-size:12px;color:var(--accent);word-break:break-all;margin-bottom:10px;min-height:38px}
-[data-theme="light"] .key-display{background:rgba(0,0,0,0.05)}
-.banner-actions{display:flex;gap:7px;flex-wrap:wrap}
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      min-height: 100vh;
+      transition: background 0.3s, color 0.3s
+    }
 
-/* BUTTONS */
-.btn{padding:8px 14px;border-radius:7px;border:none;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;transition:all 0.15s;letter-spacing:0.04em;white-space:nowrap}
-.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#07090f}
-.btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(0,245,160,0.3)}
-.btn-ghost{background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--text)}
-[data-theme="light"] .btn-ghost{background:rgba(0,0,0,0.05);color:var(--text)}
-.btn-ghost:hover{background:rgba(255,255,255,0.1);border-color:var(--border2)}
-[data-theme="light"] .btn-ghost:hover{background:rgba(0,0,0,0.1)}
-.btn-warn{background:rgba(245,196,0,0.1);border:1px solid rgba(245,196,0,0.3);color:var(--warn)}
-.btn-warn:hover{background:rgba(245,196,0,0.2)}
-.btn-danger{background:rgba(255,77,109,0.1);border:1px solid rgba(255,77,109,0.3);color:var(--danger)}
-.btn-danger:hover{background:rgba(255,77,109,0.2)}
-.btn-info{background:rgba(0,200,245,0.1);border:1px solid rgba(0,200,245,0.3);color:var(--accent2)}
-.btn-info:hover{background:rgba(0,200,245,0.2)}
-.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none!important}
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.5
+    }
 
-/* TABS */
-.tabs{display:flex;gap:4px;margin-bottom:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:4px}
-.tab{flex:1;padding:8px;text-align:center;border-radius:7px;cursor:pointer;font-size:11px;color:var(--muted);transition:all 0.2s;border:none;background:none;font-family:'JetBrains Mono',monospace;font-weight:600}
-.tab.active{background:var(--surface2);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,0.2)}
-[data-theme="light"] .tab.active{background:var(--surface3)}
+    [data-theme="light"] .bg-grid {
+      opacity: 0.3
+    }
 
-/* PANEL */
-.panel{display:none}.panel.active{display:block}
+    .bg-glow {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse 50% 40% at 20% 10%, rgba(0, 245, 160, 0.05) 0%, transparent 60%), radial-gradient(ellipse 40% 30% at 80% 90%, rgba(0, 200, 245, 0.05) 0%, transparent 60%)
+    }
 
-/* SETTINGS GRID */
-.settings-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
-.setting-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:13px 16px}
-.card-title{font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px}
-.setting-inner{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.toggle{position:relative;width:36px;height:20px;background:var(--surface2);border-radius:100px;border:1px solid var(--border);cursor:pointer;transition:background 0.2s;flex-shrink:0}
-.toggle.on{background:rgba(0,245,160,0.25);border-color:var(--accent)}
-.toggle::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--muted);transition:all 0.2s}
-.toggle.on::after{left:18px;background:var(--accent)}
-.input-field{padding:8px 11px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;outline:none;transition:border-color 0.2s}
-.input-field:focus{border-color:var(--accent)}
-.input-field::placeholder{color:var(--muted)}
-.input-sm{width:65px}
-.setting-text{font-size:11px;color:var(--muted)}
+    [data-theme="light"] .bg-glow {
+      background: radial-gradient(ellipse 50% 40% at 20% 10%, rgba(0, 168, 107, 0.08) 0%, transparent 60%), radial-gradient(ellipse 40% 30% at 80% 90%, rgba(0, 150, 199, 0.08) 0%, transparent 60%)
+    }
 
-/* ADD KEY */
-.add-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:14px}
-.add-form{display:flex;gap:8px;flex-wrap:wrap}
-.input-grow{flex:1;min-width:150px}
+    .app {
+      position: relative;
+      z-index: 1;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 28px 20px 80px
+    }
 
-/* KEY TABLE */
-.keys-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px}
-.card-header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--border)}
-.key-row{display:grid;grid-template-columns:24px 1fr 100px 65px 75px 100px;align-items:center;gap:10px;padding:11px 18px;border-bottom:1px solid rgba(255,255,255,0.03);transition:background 0.15s;animation:slideIn 0.3s ease}
-[data-theme="light"] .key-row{border-bottom:1px solid rgba(0,0,0,0.04)}
-@keyframes slideIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
-.key-row:last-child{border-bottom:none}
-.key-row:hover{background:rgba(255,255,255,0.02)}
-[data-theme="light"] .key-row:hover{background:rgba(0,0,0,0.02)}
-.key-row.is-active{background:rgba(0,245,160,0.04);border-left:2px solid var(--accent);padding-left:16px}
-.key-row.is-dead{opacity:0.35}
-.k-num{font-size:10px;color:var(--muted);text-align:center}
-.k-name-main{font-size:12px}
-.k-name-sub{font-size:9px;color:var(--muted);margin-top:2px}
-.k-expiry{font-size:10px}
-.expiry-ok{color:var(--accent)}.expiry-warn{color:var(--warn)}.expiry-dead{color:var(--danger)}
-.k-bar-top{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-bottom:3px}
-.k-bar-track{height:4px;background:rgba(255,255,255,0.06);border-radius:100px;overflow:hidden}
-[data-theme="light"] .k-bar-track{background:rgba(0,0,0,0.1)}
-.k-bar-fill{height:100%;border-radius:100px;transition:width 0.5s}
-.fill-g{background:linear-gradient(90deg,var(--accent),var(--accent2))}.fill-y{background:var(--warn)}.fill-r{background:var(--danger)}
-.status-pill{padding:2px 8px;border-radius:100px;font-size:9px;font-weight:700;letter-spacing:0.04em;white-space:nowrap;text-align:center}
-.p-active{background:rgba(0,245,160,0.12);color:var(--accent);border:1px solid rgba(0,245,160,0.25)}
-.p-ready{background:rgba(255,255,255,0.05);color:var(--muted);border:1px solid var(--border)}
-[data-theme="light"] .p-ready{background:rgba(0,0,0,0.05)}
-.p-low{background:rgba(245,196,0,0.1);color:var(--warn);border:1px solid rgba(245,196,0,0.25)}
-.p-empty{background:rgba(255,77,109,0.1);color:var(--danger);border:1px solid rgba(255,77,109,0.25)}
-.p-testing{background:rgba(0,200,245,0.1);color:var(--accent2);border:1px solid rgba(0,200,245,0.25);animation:blink 1s infinite}
-.icon-btn{width:26px;height:26px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all 0.15s;color:var(--muted)}
-[data-theme="light"] .icon-btn{background:rgba(0,0,0,0.04)}
-.icon-btn:hover{background:rgba(255,255,255,0.1);color:var(--text)}
-[data-theme="light"] .icon-btn:hover{background:rgba(0,0,0,0.1)}
-.icon-btn.del:hover{background:rgba(255,77,109,0.15);color:var(--danger)}
-.k-actions{display:flex;gap:4px;justify-content:flex-end}
+    /* HEADER */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border)
+    }
 
-/* CHART */
-.chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:14px}
-.chart-container{position:relative;height:200px;margin-top:12px}
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: 0.1em
+    }
 
-/* EXPIRY CARDS */
-.expiry-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:14px}
-.expiry-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:13px 15px;transition:border-color 0.2s}
-.expiry-card.exp-warn{border-color:rgba(245,196,0,0.3)}
-.expiry-card.exp-danger{border-color:rgba(255,77,109,0.3)}
-.expiry-card.exp-ok{border-color:rgba(0,245,160,0.2)}
-.exp-name{font-size:12px;font-weight:600;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.exp-days{font-size:22px;font-weight:700;margin-bottom:4px}
-.exp-date{font-size:10px;color:var(--muted)}
-.exp-bar{height:4px;border-radius:100px;margin-top:8px;background:rgba(255,255,255,0.06)}
-[data-theme="light"] .exp-bar{background:rgba(0,0,0,0.1)}
-.exp-bar-fill{height:100%;border-radius:100px;transition:width 0.5s}
+    .logo-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+      animation: blink 2s ease-in-out infinite
+    }
 
-/* EXPORT/IMPORT */
-.io-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:14px}
-.io-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start}
-.io-col{flex:1;min-width:200px}
-.io-col h4{font-size:11px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px}
-.textarea-field{width:100%;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:11px;outline:none;resize:vertical;min-height:100px;transition:border-color 0.2s}
-.textarea-field:focus{border-color:var(--accent)}
+    @keyframes blink {
 
-/* LOG */
-.log-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
-.log-body{max-height:180px;overflow-y:auto;padding:8px 14px;font-size:10px}
-.log-body::-webkit-scrollbar{width:3px}
-.log-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:100px}
-.log-entry{display:flex;gap:8px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.03);animation:fadeIn 0.3s}
-[data-theme="light"] .log-entry{border-bottom:1px solid rgba(0,0,0,0.04)}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.log-time{color:var(--muted);min-width:55px;flex-shrink:0}
-.log-ok{color:var(--accent)}.log-warn{color:var(--warn)}.log-err{color:var(--danger)}.log-info{color:var(--accent2)}
+      0%,
+      100% {
+        opacity: 1
+      }
 
-/* TOAST */
-.toast{position:fixed;bottom:24px;right:24px;z-index:9999;padding:11px 18px;background:var(--surface2);border:1px solid var(--accent);border-radius:9px;font-size:12px;color:var(--accent);box-shadow:0 0 28px rgba(0,245,160,0.2);transform:translateY(70px);opacity:0;transition:all 0.3s ease;pointer-events:none;max-width:300px}
-.toast.show{transform:translateY(0);opacity:1}
-.toast.t-warn{border-color:var(--warn);color:var(--warn);box-shadow:0 0 28px rgba(245,196,0,0.2)}
-.toast.t-err{border-color:var(--danger);color:var(--danger);box-shadow:0 0 28px rgba(255,77,109,0.2)}
+      50% {
+        opacity: 0.3
+      }
+    }
 
-.empty-state{padding:40px;text-align:center;color:var(--muted);font-size:12px;line-height:2.2}
+    .header-right {
+      display: flex;
+      gap: 8px;
+      align-items: center
+    }
 
-@media(max-width:700px){
-  .stats{grid-template-columns:repeat(3,1fr)}
-  .settings-grid{grid-template-columns:1fr}
-  .key-row{grid-template-columns:1fr 70px}
-  .k-num,.k-bar,.k-expiry,.k-actions{display:none}
-  .k-actions{display:flex}
-}
-</style>
+    .vtag {
+      font-size: 10px;
+      background: rgba(0, 245, 160, 0.1);
+      border: 1px solid rgba(0, 245, 160, 0.2);
+      color: var(--accent);
+      padding: 3px 9px;
+      border-radius: 100px;
+      letter-spacing: 0.1em
+    }
+
+    /* STATS */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-bottom: 18px
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 15px;
+      transition: border-color 0.2s, transform 0.15s
+    }
+
+    .stat-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-1px)
+    }
+
+    .stat-label {
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 6px
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700
+    }
+
+    .sv-g {
+      color: var(--accent)
+    }
+
+    .sv-b {
+      color: var(--accent2)
+    }
+
+    .sv-y {
+      color: var(--warn)
+    }
+
+    .sv-r {
+      color: var(--danger)
+    }
+
+    .sv-m {
+      color: #c084fc
+    }
+
+    /* ACTIVE BANNER */
+    .active-banner {
+      background: var(--surface);
+      border: 1px solid rgba(0, 245, 160, 0.2);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden
+    }
+
+    .active-banner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent)
+    }
+
+    .banner-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px
+    }
+
+    .banner-label {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase
+    }
+
+    .live-dot {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      color: var(--accent)
+    }
+
+    .live-dot span {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: blink 1.5s infinite
+    }
+
+    .key-display {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: var(--accent);
+      word-break: break-all;
+      margin-bottom: 10px;
+      min-height: 38px
+    }
+
+    [data-theme="light"] .key-display {
+      background: rgba(0, 0, 0, 0.05)
+    }
+
+    .banner-actions {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap
+    }
+
+    /* BUTTONS */
+    .btn {
+      padding: 8px 14px;
+      border-radius: 7px;
+      border: none;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      transition: all 0.15s;
+      letter-spacing: 0.04em;
+      white-space: nowrap
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #07090f
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 18px rgba(0, 245, 160, 0.3)
+    }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text)
+    }
+
+    [data-theme="light"] .btn-ghost {
+      background: rgba(0, 0, 0, 0.05);
+      color: var(--text)
+    }
+
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--border2)
+    }
+
+    [data-theme="light"] .btn-ghost:hover {
+      background: rgba(0, 0, 0, 0.1)
+    }
+
+    .btn-warn {
+      background: rgba(245, 196, 0, 0.1);
+      border: 1px solid rgba(245, 196, 0, 0.3);
+      color: var(--warn)
+    }
+
+    .btn-warn:hover {
+      background: rgba(245, 196, 0, 0.2)
+    }
+
+    .btn-danger {
+      background: rgba(255, 77, 109, 0.1);
+      border: 1px solid rgba(255, 77, 109, 0.3);
+      color: var(--danger)
+    }
+
+    .btn-danger:hover {
+      background: rgba(255, 77, 109, 0.2)
+    }
+
+    .btn-info {
+      background: rgba(0, 200, 245, 0.1);
+      border: 1px solid rgba(0, 200, 245, 0.3);
+      color: var(--accent2)
+    }
+
+    .btn-info:hover {
+      background: rgba(0, 200, 245, 0.2)
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none !important
+    }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 4px
+    }
+
+    .tab {
+      flex: 1;
+      padding: 8px;
+      text-align: center;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 11px;
+      color: var(--muted);
+      transition: all 0.2s;
+      border: none;
+      background: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600
+    }
+
+    .tab.active {
+      background: var(--surface2);
+      color: var(--text);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2)
+    }
+
+    [data-theme="light"] .tab.active {
+      background: var(--surface3)
+    }
+
+    /* PANEL */
+    .panel {
+      display: none
+    }
+
+    .panel.active {
+      display: block
+    }
+
+    /* SETTINGS GRID */
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px
+    }
+
+    .setting-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 16px
+    }
+
+    .card-title {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px
+    }
+
+    .setting-inner {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .toggle {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      background: var(--surface2);
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.2s;
+      flex-shrink: 0
+    }
+
+    .toggle.on {
+      background: rgba(0, 245, 160, 0.25);
+      border-color: var(--accent)
+    }
+
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: all 0.2s
+    }
+
+    .toggle.on::after {
+      left: 18px;
+      background: var(--accent)
+    }
+
+    .input-field {
+      padding: 8px 11px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.2s
+    }
+
+    .input-field:focus {
+      border-color: var(--accent)
+    }
+
+    .input-field::placeholder {
+      color: var(--muted)
+    }
+
+    .input-sm {
+      width: 65px
+    }
+
+    .setting-text {
+      font-size: 11px;
+      color: var(--muted)
+    }
+
+    /* ADD KEY */
+    .add-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 14px
+    }
+
+    .add-form {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .input-grow {
+      flex: 1;
+      min-width: 150px
+    }
+
+    /* KEY TABLE */
+    .keys-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 14px
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .key-row {
+      display: grid;
+      grid-template-columns: 24px 1fr 100px 65px 75px 100px;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      transition: background 0.15s;
+      animation: slideIn 0.3s ease
+    }
+
+    [data-theme="light"] .key-row {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.04)
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-6px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .key-row:last-child {
+      border-bottom: none
+    }
+
+    .key-row:hover {
+      background: rgba(255, 255, 255, 0.02)
+    }
+
+    [data-theme="light"] .key-row:hover {
+      background: rgba(0, 0, 0, 0.02)
+    }
+
+    .key-row.is-active {
+      background: rgba(0, 245, 160, 0.04);
+      border-left: 2px solid var(--accent);
+      padding-left: 16px
+    }
+
+    .key-row.is-dead {
+      opacity: 0.35
+    }
+
+    .k-num {
+      font-size: 10px;
+      color: var(--muted);
+      text-align: center
+    }
+
+    .k-name-main {
+      font-size: 12px
+    }
+
+    .k-name-sub {
+      font-size: 9px;
+      color: var(--muted);
+      margin-top: 2px
+    }
+
+    .k-expiry {
+      font-size: 10px
+    }
+
+    .expiry-ok {
+      color: var(--accent)
+    }
+
+    .expiry-warn {
+      color: var(--warn)
+    }
+
+    .expiry-dead {
+      color: var(--danger)
+    }
+
+    .k-bar-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 9px;
+      color: var(--muted);
+      margin-bottom: 3px
+    }
+
+    .k-bar-track {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 100px;
+      overflow: hidden
+    }
+
+    [data-theme="light"] .k-bar-track {
+      background: rgba(0, 0, 0, 0.1)
+    }
+
+    .k-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      transition: width 0.5s
+    }
+
+    .fill-g {
+      background: linear-gradient(90deg, var(--accent), var(--accent2))
+    }
+
+    .fill-y {
+      background: var(--warn)
+    }
+
+    .fill-r {
+      background: var(--danger)
+    }
+
+    .status-pill {
+      padding: 2px 8px;
+      border-radius: 100px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      text-align: center
+    }
+
+    .p-active {
+      background: rgba(0, 245, 160, 0.12);
+      color: var(--accent);
+      border: 1px solid rgba(0, 245, 160, 0.25)
+    }
+
+    .p-ready {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--muted);
+      border: 1px solid var(--border)
+    }
+
+    [data-theme="light"] .p-ready {
+      background: rgba(0, 0, 0, 0.05)
+    }
+
+    .p-low {
+      background: rgba(245, 196, 0, 0.1);
+      color: var(--warn);
+      border: 1px solid rgba(245, 196, 0, 0.25)
+    }
+
+    .p-empty {
+      background: rgba(255, 77, 109, 0.1);
+      color: var(--danger);
+      border: 1px solid rgba(255, 77, 109, 0.25)
+    }
+
+    .p-testing {
+      background: rgba(0, 200, 245, 0.1);
+      color: var(--accent2);
+      border: 1px solid rgba(0, 200, 245, 0.25);
+      animation: blink 1s infinite
+    }
+
+    .icon-btn {
+      width: 26px;
+      height: 26px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      transition: all 0.15s;
+      color: var(--muted)
+    }
+
+    [data-theme="light"] .icon-btn {
+      background: rgba(0, 0, 0, 0.04)
+    }
+
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text)
+    }
+
+    [data-theme="light"] .icon-btn:hover {
+      background: rgba(0, 0, 0, 0.1)
+    }
+
+    .icon-btn.del:hover {
+      background: rgba(255, 77, 109, 0.15);
+      color: var(--danger)
+    }
+
+    .k-actions {
+      display: flex;
+      gap: 4px;
+      justify-content: flex-end
+    }
+
+    /* CHART */
+    .chart-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 14px
+    }
+
+    .chart-container {
+      position: relative;
+      height: 200px;
+      margin-top: 12px
+    }
+
+    /* EXPIRY CARDS */
+    .expiry-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+      margin-bottom: 14px
+    }
+
+    .expiry-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 15px;
+      transition: border-color 0.2s
+    }
+
+    .expiry-card.exp-warn {
+      border-color: rgba(245, 196, 0, 0.3)
+    }
+
+    .expiry-card.exp-danger {
+      border-color: rgba(255, 77, 109, 0.3)
+    }
+
+    .expiry-card.exp-ok {
+      border-color: rgba(0, 245, 160, 0.2)
+    }
+
+    .exp-name {
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .exp-days {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 4px
+    }
+
+    .exp-date {
+      font-size: 10px;
+      color: var(--muted)
+    }
+
+    .exp-bar {
+      height: 4px;
+      border-radius: 100px;
+      margin-top: 8px;
+      background: rgba(255, 255, 255, 0.06)
+    }
+
+    [data-theme="light"] .exp-bar {
+      background: rgba(0, 0, 0, 0.1)
+    }
+
+    .exp-bar-fill {
+      height: 100%;
+      border-radius: 100px;
+      transition: width 0.5s
+    }
+
+    /* EXPORT/IMPORT */
+    .io-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 14px
+    }
+
+    .io-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: flex-start
+    }
+
+    .io-col {
+      flex: 1;
+      min-width: 200px
+    }
+
+    .io-col h4 {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 10px
+    }
+
+    .textarea-field {
+      width: 100%;
+      padding: 10px 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      outline: none;
+      resize: vertical;
+      min-height: 100px;
+      transition: border-color 0.2s
+    }
+
+    .textarea-field:focus {
+      border-color: var(--accent)
+    }
+
+    /* LOG */
+    .log-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden
+    }
+
+    .log-body {
+      max-height: 180px;
+      overflow-y: auto;
+      padding: 8px 14px;
+      font-size: 10px
+    }
+
+    .log-body::-webkit-scrollbar {
+      width: 3px
+    }
+
+    .log-body::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 100px
+    }
+
+    .log-entry {
+      display: flex;
+      gap: 8px;
+      padding: 3px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      animation: fadeIn 0.3s
+    }
+
+    [data-theme="light"] .log-entry {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.04)
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0
+      }
+
+      to {
+        opacity: 1
+      }
+    }
+
+    .log-time {
+      color: var(--muted);
+      min-width: 55px;
+      flex-shrink: 0
+    }
+
+    .log-ok {
+      color: var(--accent)
+    }
+
+    .log-warn {
+      color: var(--warn)
+    }
+
+    .log-err {
+      color: var(--danger)
+    }
+
+    .log-info {
+      color: var(--accent2)
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      padding: 11px 18px;
+      background: var(--surface2);
+      border: 1px solid var(--accent);
+      border-radius: 9px;
+      font-size: 12px;
+      color: var(--accent);
+      box-shadow: 0 0 28px rgba(0, 245, 160, 0.2);
+      transform: translateY(70px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      pointer-events: none;
+      max-width: 300px
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1
+    }
+
+    .toast.t-warn {
+      border-color: var(--warn);
+      color: var(--warn);
+      box-shadow: 0 0 28px rgba(245, 196, 0, 0.2)
+    }
+
+    .toast.t-err {
+      border-color: var(--danger);
+      color: var(--danger);
+      box-shadow: 0 0 28px rgba(255, 77, 109, 0.2)
+    }
+
+    .empty-state {
+      padding: 40px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 2.2
+    }
+
+    @media(max-width:700px) {
+      .stats {
+        grid-template-columns: repeat(3, 1fr)
+      }
+
+      .settings-grid {
+        grid-template-columns: 1fr
+      }
+
+      .key-row {
+        grid-template-columns: 1fr 70px
+      }
+
+      .k-num,
+      .k-bar,
+      .k-expiry,
+      .k-actions {
+        display: none
+      }
+
+      .k-actions {
+        display: flex
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div class="bg-grid"></div>
-<div class="bg-glow"></div>
-<div class="toast" id="toast"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+  <div class="toast" id="toast"></div>
 
-<div class="app">
+  <div class="app">
 
-<!-- HEADER -->
-<header>
-  <div class="logo"><span class="logo-dot"></span>API VAULT</div>
-  <div class="header-right">
-    <span class="vtag">v3 ULTIMATE</span>
-    <button class="btn btn-ghost" onclick="toggleTheme()" id="themeBtn">☀️ Light</button>
-  </div>
-</header>
+    <!-- HEADER -->
+    <header>
+      <div class="logo"><span class="logo-dot"></span>API VAULT</div>
+      <div class="header-right">
+        <span class="vtag">v3 ULTIMATE</span>
+        <button class="btn btn-ghost" onclick="toggleTheme()" id="themeBtn">☀️ Light</button>
+      </div>
+    </header>
 
-<!-- STATS -->
-<div class="stats">
-  <div class="stat-card"><div class="stat-label">Total Keys</div><div class="stat-value sv-g" id="sTotal">0</div></div>
-  <div class="stat-card"><div class="stat-label">Valid</div><div class="stat-value sv-b" id="sValid">0</div></div>
-  <div class="stat-card"><div class="stat-label">Low Credit</div><div class="stat-value sv-y" id="sLow">0</div></div>
-  <div class="stat-card"><div class="stat-label">Depleted</div><div class="stat-value sv-r" id="sDep">0</div></div>
-  <div class="stat-card"><div class="stat-label">Expiring Soon</div><div class="stat-value sv-m" id="sExp">0</div></div>
-</div>
-
-<!-- ACTIVE BANNER -->
-<div class="active-banner">
-  <div class="banner-top">
-    <span class="banner-label">⚡ Active Key — Cline ma nakho</span>
-    <div class="live-dot"><span></span>LIVE</div>
-  </div>
-  <div class="key-display" id="activeDisplay">— Koi key active nathi —</div>
-  <div class="banner-actions">
-    <button class="btn btn-primary" onclick="copyActive()">📋 Copy Key</button>
-    <button class="btn btn-ghost" onclick="rotateNext()">⟳ Next Key</button>
-    <button class="btn btn-info" onclick="testAllKeys()">🧪 Test All</button>
-    <button class="btn btn-warn" onclick="testActive()">⚡ Test Active</button>
-  </div>
-</div>
-
-<!-- TABS -->
-<div class="tabs">
-  <button class="tab active" onclick="switchTab('keys',this)">🗝️ Keys</button>
-  <button class="tab" onclick="switchTab('expiry',this)">⏳ Expiry</button>
-  <button class="tab" onclick="switchTab('chart',this)">📊 Usage Chart</button>
-  <button class="tab" onclick="switchTab('settings',this)">⚙️ Settings</button>
-  <button class="tab" onclick="switchTab('io',this)">💾 Export/Import</button>
-  <button class="tab" onclick="switchTab('deploy',this)">🚀 Deploy</button>
-</div>
-
-<!-- PANEL: KEYS -->
-<div class="panel active" id="panel-keys">
-  <div class="add-card">
-    <div class="card-title">➕ New Key Add Karo (Max 15)</div>
-    <div class="add-form">
-      <input class="input-field input-grow" id="kName" placeholder="Label — ProtonMail-01" maxlength="30">
-      <input class="input-field input-grow" id="kValue" placeholder="sk-ant-api03-xxxxxxxx" maxlength="250">
-      <input class="input-field" style="width:85px" id="kCredits" type="number" placeholder="$Credits" value="5" step="0.1">
-      <button class="btn btn-primary" onclick="addKey()">+ Add</button>
-    </div>
-  </div>
-  <div class="keys-card">
-    <div class="card-header">
-      <div class="card-title" style="margin:0">🗝️ Vault (<span id="kCount">0</span>/15)</div>
-      <div style="display:flex;gap:6px">
-        <button class="btn btn-ghost" style="font-size:10px" onclick="clearAll()">🗑 Clear All</button>
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">Total Keys</div>
+        <div class="stat-value sv-g" id="sTotal">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Valid</div>
+        <div class="stat-value sv-b" id="sValid">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Low Credit</div>
+        <div class="stat-value sv-y" id="sLow">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Depleted</div>
+        <div class="stat-value sv-r" id="sDep">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Expiring Soon</div>
+        <div class="stat-value sv-m" id="sExp">0</div>
       </div>
     </div>
-    <div id="keyList"><div class="empty-state">Koi key nathi.<br>Upar thi ProtonMail API key add karo! 👆<br><small>console.anthropic.com → API Keys → Create Key</small></div></div>
-  </div>
-</div>
 
-<!-- PANEL: EXPIRY -->
-<div class="panel" id="panel-expiry">
-  <div class="add-card">
-    <div class="card-title">ℹ️ Anthropic API free credits 14 days ma expire thay. Har key ni expiry track karo.</div>
-  </div>
-  <div class="expiry-grid" id="expiryGrid"><div class="empty-state">Keys add karo expiry track karva!</div></div>
-</div>
+    <!-- ACTIVE BANNER -->
+    <div class="active-banner">
+      <div class="banner-top">
+        <span class="banner-label">⚡ Active Key — Cline ma nakho</span>
+        <div class="live-dot"><span></span>LIVE</div>
+      </div>
+      <div class="key-display" id="activeDisplay">— Koi key active nathi —</div>
+      <div class="banner-actions">
+        <button class="btn btn-primary" onclick="copyActive()">📋 Copy Key</button>
+        <button class="btn btn-ghost" onclick="rotateNext()">⟳ Next Key</button>
+        <button class="btn btn-info" onclick="testAllKeys()">🧪 Test All</button>
+        <button class="btn btn-warn" onclick="testActive()">⚡ Test Active</button>
+      </div>
+    </div>
 
-<!-- PANEL: CHART -->
-<div class="panel" id="panel-chart">
-  <div class="chart-wrap">
-    <div class="card-title">📊 Credit Remaining per Key</div>
-    <div class="chart-container"><canvas id="creditChart"></canvas></div>
-  </div>
-  <div class="chart-wrap">
-    <div class="card-title">📈 Expiry Countdown (Days Remaining)</div>
-    <div class="chart-container"><canvas id="expiryChart"></canvas></div>
-  </div>
-</div>
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('keys',this)">🗝️ Keys</button>
+      <button class="tab" onclick="switchTab('expiry',this)">⏳ Expiry</button>
+      <button class="tab" onclick="switchTab('chart',this)">📊 Usage Chart</button>
+      <button class="tab" onclick="switchTab('settings',this)">⚙️ Settings</button>
+      <button class="tab" onclick="switchTab('io',this)">💾 Export/Import</button>
+      <button class="tab" onclick="switchTab('deploy',this)">🚀 Deploy</button>
+    </div>
 
-<!-- PANEL: SETTINGS -->
-<div class="panel" id="panel-settings">
-  <div class="settings-grid">
-    <div class="setting-card">
-      <div class="card-title">🔔 Browser Notifications</div>
-      <div class="setting-inner">
-        <div class="toggle" id="notifToggle" onclick="toggleNotif()"></div>
-        <span class="setting-text" id="notifText">OFF</span>
-      </div>
-    </div>
-    <div class="setting-card">
-      <div class="card-title">⚠️ Low Credit Alert %</div>
-      <div class="setting-inner">
-        <input class="input-field input-sm" type="number" id="threshold" value="20" min="1" max="99">
-        <span class="setting-text">% pe alert</span>
-        <button class="btn btn-ghost" onclick="saveSettings()" style="padding:6px 10px;font-size:10px">Save</button>
-      </div>
-    </div>
-    <div class="setting-card">
-      <div class="card-title">🔄 Auto Rotate on Error</div>
-      <div class="setting-inner">
-        <div class="toggle on" id="autoToggle" onclick="toggleAuto()"></div>
-        <span class="setting-text" id="autoText">ON</span>
-      </div>
-    </div>
-    <div class="setting-card">
-      <div class="card-title">⏰ Expiry Warning (days)</div>
-      <div class="setting-inner">
-        <input class="input-field input-sm" type="number" id="expiryWarn" value="3" min="1" max="14">
-        <span class="setting-text">din pehle warn</span>
-        <button class="btn btn-ghost" onclick="saveSettings()" style="padding:6px 10px;font-size:10px">Save</button>
-      </div>
-    </div>
-    <div class="setting-card">
-      <div class="card-title">🎨 Theme</div>
-      <div class="setting-inner">
-        <button class="btn btn-ghost" onclick="toggleTheme()" id="themeBtn2">☀️ Light Mode</button>
-      </div>
-    </div>
-    <div class="setting-card">
-      <div class="card-title">📋 Log</div>
-      <div class="setting-inner">
-        <button class="btn btn-danger" onclick="clearLog()" style="font-size:10px">Clear Log</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- PANEL: EXPORT/IMPORT -->
-<div class="panel" id="panel-io">
-  <div class="io-card">
-    <div class="io-row">
-      <div class="io-col">
-        <h4>📤 Export — Backup as JSON</h4>
-        <p style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6">Badhi keys JSON ma export karo — safe rakhjo locally!</p>
-        <button class="btn btn-primary" onclick="exportKeys()">⬇️ Download JSON Backup</button>
-        <div style="margin-top:10px">
-          <button class="btn btn-ghost" onclick="copyExport()">📋 Clipboard pe Copy</button>
+    <!-- PANEL: KEYS -->
+    <div class="panel active" id="panel-keys">
+      <div class="add-card">
+        <div class="card-title">➕ New Key Add Karo (Max 15)</div>
+        <div class="add-form">
+          <input class="input-field input-grow" id="kName" placeholder="Label — ProtonMail-01" maxlength="30">
+          <input class="input-field input-grow" id="kValue" placeholder="sk-ant-api03-xxxxxxxx" maxlength="250">
+          <input class="input-field" style="width:85px" id="kCredits" type="number" placeholder="$Credits" value="5"
+            step="0.1">
+          <button class="btn btn-primary" onclick="addKey()">+ Add</button>
         </div>
-        <textarea class="textarea-field" id="exportArea" style="margin-top:10px" placeholder="Export yaha dekhase..." readonly></textarea>
       </div>
-      <div class="io-col">
-        <h4>📥 Import — JSON thi Restore</h4>
-        <p style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6">Backup JSON paste karo ane import karo!</p>
-        <textarea class="textarea-field" id="importArea" placeholder='{"keys":[...]} yaha paste karo'></textarea>
-        <div style="margin-top:10px;display:flex;gap:8px">
-          <button class="btn btn-info" onclick="importKeys()">⬆️ Import Keys</button>
-          <button class="btn btn-ghost" onclick="document.getElementById(\'importArea\').value=\'\'">Clear</button>
+      <div class="keys-card">
+        <div class="card-header">
+          <div class="card-title" style="margin:0">🗝️ Vault (<span id="kCount">0</span>/15)</div>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-ghost" style="font-size:10px" onclick="clearAll()">🗑 Clear All</button>
+          </div>
+        </div>
+        <div id="keyList">
+          <div class="empty-state">Koi key nathi.<br>Upar thi ProtonMail API key add karo!
+            👆<br><small>console.anthropic.com → API Keys → Create Key</small></div>
         </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- PANEL: DEPLOY -->
-<div class="panel" id="panel-deploy">
-  <div class="io-card">
-    <div class="card-title">🚀 Vercel Pe Free Deploy Karo</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:12px">
-      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
-        <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:8px">Step 1 — File Prepare</div>
-        <div style="font-size:11px;color:var(--muted);line-height:1.8">Aa HTML file download karo.<br>Name change karo: <code style="color:var(--accent2);background:rgba(0,0,0,0.3);padding:1px 5px;border-radius:3px">index.html</code></div>
+    <!-- PANEL: EXPIRY -->
+    <div class="panel" id="panel-expiry">
+      <div class="add-card">
+        <div class="card-title">ℹ️ Anthropic API free credits 14 days ma expire thay. Har key ni expiry track karo.
+        </div>
       </div>
-      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
-        <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:8px">Step 2 — GitHub Repo</div>
-        <div style="font-size:11px;color:var(--muted);line-height:1.8">github.com → New repository<br>Name: <code style="color:var(--accent2);background:rgba(0,0,0,0.3);padding:1px 5px;border-radius:3px">api-vault</code> → Public<br>index.html upload karo</div>
-      </div>
-      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
-        <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:8px">Step 3 — Vercel Deploy</div>
-        <div style="font-size:11px;color:var(--muted);line-height:1.8">vercel.com → GitHub login<br>Import repo → Deploy!<br>Free URL malse 🎉</div>
-      </div>
-      <div style="background:var(--surface2);border:1px solid rgba(255,77,109,0.2);border-radius:8px;padding:14px">
-        <div style="font-size:11px;color:var(--danger);font-weight:700;margin-bottom:8px">⚠️ Security Note</div>
-        <div style="font-size:11px;color:var(--muted);line-height:1.8">Keys browser localStorage ma save thase.<br>Sirf tara device pe.<br>Koi bija ne access nathi.<br>Safe & Private! 🔒</div>
-      </div>
-      <div style="background:var(--surface2);border:1px solid rgba(0,200,245,0.2);border-radius:8px;padding:14px">
-        <div style="font-size:11px;color:var(--accent2);font-weight:700;margin-bottom:8px">💡 Navi Device Pe</div>
-        <div style="font-size:11px;color:var(--muted);line-height:1.8">Export/Import tab thi JSON backup lo.<br>Navi device pe open karo → Import karo.<br>Badhu restore thaise!</div>
-      </div>
-      <div style="background:var(--surface2);border:1px solid rgba(0,245,160,0.2);border-radius:8px;padding:14px">
-        <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:8px">🔄 Update Kevi Rite</div>
-        <div style="font-size:11px;color:var(--muted);line-height:1.8">GitHub repo ma file update karo.<br>Vercel automatic redeploy karase!<br>2 minute ma live!</div>
+      <div class="expiry-grid" id="expiryGrid">
+        <div class="empty-state">Keys add karo expiry track karva!</div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- LOG -->
-<div class="log-card" style="margin-top:14px">
-  <div class="card-header">
-    <div class="card-title" style="margin:0">📋 Activity Log</div>
-    <button class="btn btn-ghost" style="font-size:10px" onclick="clearLog()">Clear</button>
-  </div>
-  <div class="log-body" id="logBody">
-    <div class="log-entry"><span class="log-time">--:--:--</span><span class="log-info">API Vault v3 Ultimate ready! 🚀</span></div>
-  </div>
-</div>
+    <!-- PANEL: CHART -->
+    <div class="panel" id="panel-chart">
+      <div class="chart-wrap">
+        <div class="card-title">📊 Credit Remaining per Key</div>
+        <div class="chart-container"><canvas id="creditChart"></canvas></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="card-title">📈 Expiry Countdown (Days Remaining)</div>
+        <div class="chart-container"><canvas id="expiryChart"></canvas></div>
+      </div>
+    </div>
 
-</div><!-- /app -->
+    <!-- PANEL: SETTINGS -->
+    <div class="panel" id="panel-settings">
+      <div class="settings-grid">
+        <div class="setting-card">
+          <div class="card-title">🔔 Browser Notifications</div>
+          <div class="setting-inner">
+            <div class="toggle" id="notifToggle" onclick="toggleNotif()"></div>
+            <span class="setting-text" id="notifText">OFF</span>
+          </div>
+        </div>
+        <div class="setting-card">
+          <div class="card-title">⚠️ Low Credit Alert %</div>
+          <div class="setting-inner">
+            <input class="input-field input-sm" type="number" id="threshold" value="20" min="1" max="99">
+            <span class="setting-text">% pe alert</span>
+            <button class="btn btn-ghost" onclick="saveSettings()" style="padding:6px 10px;font-size:10px">Save</button>
+          </div>
+        </div>
+        <div class="setting-card">
+          <div class="card-title">🔄 Auto Rotate on Error</div>
+          <div class="setting-inner">
+            <div class="toggle on" id="autoToggle" onclick="toggleAuto()"></div>
+            <span class="setting-text" id="autoText">ON</span>
+          </div>
+        </div>
+        <div class="setting-card">
+          <div class="card-title">⏰ Expiry Warning (days)</div>
+          <div class="setting-inner">
+            <input class="input-field input-sm" type="number" id="expiryWarn" value="3" min="1" max="14">
+            <span class="setting-text">din pehle warn</span>
+            <button class="btn btn-ghost" onclick="saveSettings()" style="padding:6px 10px;font-size:10px">Save</button>
+          </div>
+        </div>
+        <div class="setting-card">
+          <div class="card-title">🎨 Theme</div>
+          <div class="setting-inner">
+            <button class="btn btn-ghost" onclick="toggleTheme()" id="themeBtn2">☀️ Light Mode</button>
+          </div>
+        </div>
+        <div class="setting-card">
+          <div class="card-title">📋 Log</div>
+          <div class="setting-inner">
+            <button class="btn btn-danger" onclick="clearLog()" style="font-size:10px">Clear Log</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<script>
-// ── State ──
-let keys = JSON.parse(localStorage.getItem('av3_keys') || '[]');
-let activeIdx = parseInt(localStorage.getItem('av3_active') || '-1');
-let threshold = parseInt(localStorage.getItem('av3_threshold') || '20');
-let expiryWarn = parseInt(localStorage.getItem('av3_expwarn') || '3');
-let notifOn = localStorage.getItem('av3_notif') === 'true';
-let autoRotate = localStorage.getItem('av3_auto') !== 'false';
-let isDark = localStorage.getItem('av3_theme') !== 'light';
-let charts = {};
+    <!-- PANEL: EXPORT/IMPORT -->
+    <div class="panel" id="panel-io">
+      <div class="io-card">
+        <div class="io-row">
+          <div class="io-col">
+            <h4>📤 Export — Backup as JSON</h4>
+            <p style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6">Badhi keys JSON ma export
+              karo — safe rakhjo locally!</p>
+            <button class="btn btn-primary" onclick="exportKeys()">⬇️ Download JSON Backup</button>
+            <div style="margin-top:10px">
+              <button class="btn btn-ghost" onclick="copyExport()">📋 Clipboard pe Copy</button>
+            </div>
+            <textarea class="textarea-field" id="exportArea" style="margin-top:10px"
+              placeholder="Export yaha dekhase..." readonly></textarea>
+          </div>
+          <div class="io-col">
+            <h4>📥 Import — JSON thi Restore</h4>
+            <p style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6">Backup JSON paste karo ane
+              import karo!</p>
+            <textarea class="textarea-field" id="importArea" placeholder='{"keys":[...]} yaha paste karo'></textarea>
+            <div style="margin-top:10px;display:flex;gap:8px">
+              <button class="btn btn-info" onclick="importKeys()">⬆️ Import Keys</button>
+              <button class="btn btn-ghost" onclick="document.getElementById(\'importArea\').value=\'\'">Clear</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-// ── Boot ──
-applyTheme();
-document.getElementById('threshold').value = threshold;
-document.getElementById('expiryWarn').value = expiryWarn;
-if (notifOn) { document.getElementById('notifToggle').classList.add('on'); document.getElementById('notifText').textContent = 'ON'; }
-if (!autoRotate) { document.getElementById('autoToggle').classList.remove('on'); document.getElementById('autoText').textContent = 'OFF'; }
-if (activeIdx === -1 && keys.length > 0) autoSelectActive();
-render();
+    <!-- PANEL: DEPLOY -->
+    <div class="panel" id="panel-deploy">
+      <div class="io-card">
+        <div class="card-title">🚀 Vercel Pe Free Deploy Karo</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:12px">
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
+            <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:8px">Step 1 — File Prepare
+            </div>
+            <div style="font-size:11px;color:var(--muted);line-height:1.8">Aa HTML file download karo.<br>Name change
+              karo: <code
+                style="color:var(--accent2);background:rgba(0,0,0,0.3);padding:1px 5px;border-radius:3px">index.html</code>
+            </div>
+          </div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
+            <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:8px">Step 2 — GitHub Repo</div>
+            <div style="font-size:11px;color:var(--muted);line-height:1.8">github.com → New repository<br>Name: <code
+                style="color:var(--accent2);background:rgba(0,0,0,0.3);padding:1px 5px;border-radius:3px">api-vault</code>
+              → Public<br>index.html upload karo</div>
+          </div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
+            <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:8px">Step 3 — Vercel Deploy
+            </div>
+            <div style="font-size:11px;color:var(--muted);line-height:1.8">vercel.com → GitHub login<br>Import repo →
+              Deploy!<br>Free URL malse 🎉</div>
+          </div>
+          <div style="background:var(--surface2);border:1px solid rgba(255,77,109,0.2);border-radius:8px;padding:14px">
+            <div style="font-size:11px;color:var(--danger);font-weight:700;margin-bottom:8px">⚠️ Security Note</div>
+            <div style="font-size:11px;color:var(--muted);line-height:1.8">Keys browser localStorage ma save
+              thase.<br>Sirf tara device pe.<br>Koi bija ne access nathi.<br>Safe & Private! 🔒</div>
+          </div>
+          <div style="background:var(--surface2);border:1px solid rgba(0,200,245,0.2);border-radius:8px;padding:14px">
+            <div style="font-size:11px;color:var(--accent2);font-weight:700;margin-bottom:8px">💡 Navi Device Pe</div>
+            <div style="font-size:11px;color:var(--muted);line-height:1.8">Export/Import tab thi JSON backup lo.<br>Navi
+              device pe open karo → Import karo.<br>Badhu restore thaise!</div>
+          </div>
+          <div style="background:var(--surface2);border:1px solid rgba(0,245,160,0.2);border-radius:8px;padding:14px">
+            <div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:8px">🔄 Update Kevi Rite</div>
+            <div style="font-size:11px;color:var(--muted);line-height:1.8">GitHub repo ma file update karo.<br>Vercel
+              automatic redeploy karase!<br>2 minute ma live!</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-function save() { localStorage.setItem('av3_keys', JSON.stringify(keys)); localStorage.setItem('av3_active', activeIdx); }
+    <!-- LOG -->
+    <div class="log-card" style="margin-top:14px">
+      <div class="card-header">
+        <div class="card-title" style="margin:0">📋 Activity Log</div>
+        <button class="btn btn-ghost" style="font-size:10px" onclick="clearLog()">Clear</button>
+      </div>
+      <div class="log-body" id="logBody">
+        <div class="log-entry"><span class="log-time">--:--:--</span><span class="log-info">API Vault v3 Ultimate ready!
+            🚀</span></div>
+      </div>
+    </div>
 
-// ── Theme ──
-function applyTheme() {
-  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-  const t = isDark ? '☀️ Light' : '🌙 Dark';
-  document.getElementById('themeBtn').textContent = t;
-  if (document.getElementById('themeBtn2')) document.getElementById('themeBtn2').textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
-}
-function toggleTheme() {
-  isDark = !isDark;
-  localStorage.setItem('av3_theme', isDark ? 'dark' : 'light');
-  applyTheme();
-  if (charts.credit || charts.expiry) { setTimeout(buildCharts, 100); }
-}
+  </div><!-- /app -->
 
-// ── Tabs ──
-function switchTab(name, el) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('panel-' + name).classList.add('active');
-  el.classList.add('active');
-  if (name === 'chart') setTimeout(buildCharts, 50);
-  if (name === 'expiry') renderExpiry();
-  if (name === 'io') refreshExport();
-}
+  <script>
+    // ── State ──
+    let keys = JSON.parse(localStorage.getItem('av3_keys') || '[]');
+    let activeIdx = parseInt(localStorage.getItem('av3_active') || '-1');
+    let threshold = parseInt(localStorage.getItem('av3_threshold') || '20');
+    let expiryWarn = parseInt(localStorage.getItem('av3_expwarn') || '3');
+    let notifOn = localStorage.getItem('av3_notif') === 'true';
+    let autoRotate = localStorage.getItem('av3_auto') !== 'false';
+    let isDark = localStorage.getItem('av3_theme') !== 'light';
+    let charts = {};
 
-// ── Add Key ──
-function addKey() {
-  if (keys.length >= 15) { toast('Max 15 keys!', 'err'); return; }
-  const name = document.getElementById('kName').value.trim();
-  const val = document.getElementById('kValue').value.trim();
-  const credits = parseFloat(document.getElementById('kCredits').value) || 5;
-  if (!name || !val) { toast('Name ane Key banne nakho!', 'err'); return; }
-  if (!val.startsWith('sk-')) { toast('Invalid key — sk- thi sharu thavu joie!', 'err'); return; }
-  const now = new Date();
-  const expiry = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
-  keys.push({ id: Date.now(), name, value: val, total: credits, used: 0, status: 'untested', added: now.toLocaleDateString('en-IN'), addedTs: now.getTime(), expiryTs: expiry.getTime() });
-  if (activeIdx === -1) activeIdx = 0;
-  save(); render();
-  document.getElementById('kName').value = '';
-  document.getElementById('kValue').value = '';
-  log(`Key added: ${name} (expires ${expiry.toLocaleDateString('en-IN')})`, 'ok');
-  toast(`✅ ${name} added!`);
-}
+    // ── Boot ──
+    applyTheme();
+    document.getElementById('threshold').value = threshold;
+    document.getElementById('expiryWarn').value = expiryWarn;
+    if (notifOn) { document.getElementById('notifToggle').classList.add('on'); document.getElementById('notifText').textContent = 'ON'; }
+    if (!autoRotate) { document.getElementById('autoToggle').classList.remove('on'); document.getElementById('autoText').textContent = 'OFF'; }
+    if (activeIdx === -1 && keys.length > 0) autoSelectActive();
+    render();
 
-// ── Delete ──
-function deleteKey(id) {
-  const i = keys.findIndex(k => k.id === id);
-  const name = keys[i].name;
-  keys.splice(i, 1);
-  if (activeIdx >= keys.length) activeIdx = keys.length - 1;
-  if (keys.length === 0) activeIdx = -1;
-  save(); render();
-  log(`Deleted: ${name}`, 'warn');
-}
+    function save() { localStorage.setItem('av3_keys', JSON.stringify(keys)); localStorage.setItem('av3_active', activeIdx); }
 
-// ── Set Active ──
-function setActive(id) {
-  const i = keys.findIndex(k => k.id === id);
-  if (i === -1) return;
-  activeIdx = i;
-  save(); render();
-  log(`Active: ${keys[i].name}`, 'info');
-  toast(`⚡ Active: ${keys[i].name}`);
-}
-
-// ── Rotate ──
-function rotateNext() {
-  if (!keys.length) { toast('Keys nathi!', 'err'); return; }
-  let next = (activeIdx + 1) % keys.length;
-  let tries = 0;
-  while ((keys[next].status === 'depleted' || keys[next].status === 'invalid') && tries < keys.length) { next = (next + 1) % keys.length; tries++; }
-  activeIdx = next;
-  save(); render();
-  log(`Rotated → ${keys[next].name}`, 'info');
-  toast(`⟳ ${keys[next].name} pe switch!`);
-}
-
-function autoSelectActive() { for (let i = 0; i < keys.length; i++) { if (pct(keys[i]) > 0) { activeIdx = i; save(); return; } } }
-
-// ── API Test ──
-async function testKey(id) {
-  const k = keys.find(k => k.id === id);
-  if (!k) return;
-  k.status = 'testing'; render();
-  log(`Testing: ${k.name}...`, 'info');
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': k.value, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 10, messages: [{ role: 'user', content: 'Hi' }] })
-    });
-    const data = await res.json();
-    if (res.ok) {
-      k.status = 'valid';
-      log(`✅ VALID: ${k.name}`, 'ok');
-      toast(`✅ ${k.name} — Valid!`);
-      notify('Key Valid!', `${k.name} working che!`);
-    } else if (data?.error?.message?.toLowerCase().includes('credit') || data?.error?.message?.toLowerCase().includes('balance')) {
-      k.status = 'depleted';
-      log(`⛔ DEPLETED: ${k.name}`, 'err');
-      toast(`⛔ ${k.name} khatam!`, 'err');
-      notify('Credits Khatam!', `${k.name} credits nathi!`);
-      if (autoRotate) rotateNext();
-    } else if (res.status === 401) {
-      k.status = 'invalid';
-      log(`❌ INVALID: ${k.name}`, 'err');
-      toast(`❌ ${k.name} invalid key!`, 'err');
-    } else {
-      k.status = 'error';
-      log(`⚠️ ERROR: ${k.name} — ${data?.error?.type || '?'}`, 'warn');
+    // ── Theme ──
+    function applyTheme() {
+      document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      const t = isDark ? '☀️ Light' : '🌙 Dark';
+      document.getElementById('themeBtn').textContent = t;
+      if (document.getElementById('themeBtn2')) document.getElementById('themeBtn2').textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
     }
-  } catch (e) {
-    k.status = 'error';
-    log(`❌ Network/CORS error: ${k.name}`, 'err');
-    toast('⚠️ CORS error — Vercel deploy karo!', 'warn');
-  }
-  save(); render();
-}
-async function testActive() { if (activeIdx < 0 || !keys[activeIdx]) { toast('No active!', 'err'); return; } await testKey(keys[activeIdx].id); }
-async function testAllKeys() {
-  if (!keys.length) { toast('Keys nathi!', 'err'); return; }
-  toast('🧪 Testing all...');
-  for (const k of keys) { await testKey(k.id); await new Promise(r => setTimeout(r, 600)); }
-  log('All tested!', 'ok');
-  toast('✅ All keys tested!');
-}
-
-// ── Copy ──
-function copyActive() {
-  if (activeIdx < 0 || !keys[activeIdx]) { toast('No active key!', 'err'); return; }
-  const txt = keys[activeIdx].value;
-  if (navigator.clipboard) { navigator.clipboard.writeText(txt).then(() => { log(`Copied: ${keys[activeIdx].name}`, 'ok'); toast('📋 Copied! Cline ma paste karo.'); }); }
-  else { const ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); toast('📋 Copied!'); }
-}
-
-// ── Export/Import ──
-function getExportData() {
-  return JSON.stringify({ version: 3, exported: new Date().toISOString(), keys: keys.map(k => ({ name: k.name, value: k.value, total: k.total, used: k.used, status: k.status, added: k.added, addedTs: k.addedTs, expiryTs: k.expiryTs })) }, null, 2);
-}
-function refreshExport() { document.getElementById('exportArea').value = getExportData(); }
-function exportKeys() {
-  const blob = new Blob([getExportData()], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `api-vault-backup-${new Date().toISOString().slice(0,10)}.json`;
-  a.click();
-  log('Keys exported!', 'ok');
-  toast('📥 JSON backup downloaded!');
-}
-function copyExport() {
-  const txt = getExportData();
-  if (navigator.clipboard) { navigator.clipboard.writeText(txt).then(() => toast('📋 Export copied!')); }
-  else { const ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); toast('📋 Copied!'); }
-}
-function importKeys() {
-  try {
-    const raw = document.getElementById('importArea').value.trim();
-    if (!raw) { toast('Koi data nathi!', 'err'); return; }
-    const data = JSON.parse(raw);
-    if (!data.keys || !Array.isArray(data.keys)) throw new Error('Invalid format');
-    let added = 0;
-    for (const k of data.keys) {
-      if (keys.length >= 15) break;
-      if (!k.name || !k.value) continue;
-      if (keys.find(e => e.value === k.value)) continue; // Skip duplicates
-      keys.push({ id: Date.now() + Math.random(), name: k.name, value: k.value, total: k.total || 5, used: k.used || 0, status: k.status || 'untested', added: k.added || new Date().toLocaleDateString('en-IN'), addedTs: k.addedTs || Date.now(), expiryTs: k.expiryTs || (Date.now() + 14*24*60*60*1000) });
-      added++;
+    function toggleTheme() {
+      isDark = !isDark;
+      localStorage.setItem('av3_theme', isDark ? 'dark' : 'light');
+      applyTheme();
+      if (charts.credit || charts.expiry) { setTimeout(buildCharts, 100); }
     }
-    if (activeIdx === -1 && keys.length > 0) activeIdx = 0;
-    save(); render();
-    log(`Imported ${added} keys!`, 'ok');
-    toast(`✅ ${added} keys imported!`);
-    document.getElementById('importArea').value = '';
-  } catch (e) { toast('Invalid JSON!', 'err'); log('Import failed: ' + e.message, 'err'); }
-}
 
-// ── Charts ──
-function buildCharts() {
-  const textColor = isDark ? '#8892a4' : '#718096';
-  const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.08)';
-  // Credit chart
-  if (charts.credit) { charts.credit.destroy(); }
-  const cc = document.getElementById('creditChart').getContext('2d');
-  charts.credit = new Chart(cc, {
-    type: 'bar',
-    data: {
-      labels: keys.map(k => k.name),
-      datasets: [{
-        label: 'Credit Remaining %',
-        data: keys.map(k => pct(k).toFixed(1)),
-        backgroundColor: keys.map(k => { const p = pct(k); return p > threshold ? 'rgba(0,245,160,0.6)' : p > 0 ? 'rgba(245,196,0,0.6)' : 'rgba(255,77,109,0.6)'; }),
-        borderColor: keys.map(k => { const p = pct(k); return p > threshold ? '#00f5a0' : p > 0 ? '#f5c400' : '#ff4d6d'; }),
-        borderWidth: 1, borderRadius: 5
-      }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: textColor, font: { family: 'JetBrains Mono', size: 10 } }, grid: { color: gridColor } }, y: { max: 100, ticks: { color: textColor, font: { family: 'JetBrains Mono', size: 10 }, callback: v => v + '%' }, grid: { color: gridColor } } } }
-  });
-  // Expiry chart
-  if (charts.expiry) { charts.expiry.destroy(); }
-  const ec = document.getElementById('expiryChart').getContext('2d');
-  charts.expiry = new Chart(ec, {
-    type: 'bar',
-    data: {
-      labels: keys.map(k => k.name),
-      datasets: [{
-        label: 'Days Remaining',
-        data: keys.map(k => Math.max(0, daysLeft(k))),
-        backgroundColor: keys.map(k => { const d = daysLeft(k); return d <= 0 ? 'rgba(255,77,109,0.6)' : d <= expiryWarn ? 'rgba(245,196,0,0.6)' : 'rgba(0,200,245,0.6)'; }),
-        borderColor: keys.map(k => { const d = daysLeft(k); return d <= 0 ? '#ff4d6d' : d <= expiryWarn ? '#f5c400' : '#00c8f5'; }),
-        borderWidth: 1, borderRadius: 5
-      }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: textColor, font: { family: 'JetBrains Mono', size: 10 } }, grid: { color: gridColor } }, y: { ticks: { color: textColor, font: { family: 'JetBrains Mono', size: 10 }, callback: v => v + 'd' }, grid: { color: gridColor } } } }
-  });
-}
+    // ── Tabs ──
+    function switchTab(name, el) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('panel-' + name).classList.add('active');
+      el.classList.add('active');
+      if (name === 'chart') setTimeout(buildCharts, 50);
+      if (name === 'expiry') renderExpiry();
+      if (name === 'io') refreshExport();
+    }
 
-// ── Expiry Panel ──
-function renderExpiry() {
-  const grid = document.getElementById('expiryGrid');
-  if (!keys.length) { grid.innerHTML = '<div class="empty-state">Keys add karo!</div>'; return; }
-  grid.innerHTML = keys.map(k => {
-    const d = daysLeft(k);
-    const pctd = Math.max(0, Math.min(100, (d / 14) * 100));
-    const cls = d <= 0 ? 'exp-danger' : d <= expiryWarn ? 'exp-warn' : 'exp-ok';
-    const fillColor = d <= 0 ? 'var(--danger)' : d <= expiryWarn ? 'var(--warn)' : 'var(--accent)';
-    const dayText = d <= 0 ? '⛔ Expired' : d === 1 ? '1 day left!' : `${d} days`;
-    const dayColor = d <= 0 ? 'sv-r' : d <= expiryWarn ? 'sv-y' : 'sv-g';
-    return `<div class="expiry-card ${cls}">
+    // ── Add Key ──
+    function addKey() {
+      if (keys.length >= 15) { toast('Max 15 keys!', 'err'); return; }
+      const name = document.getElementById('kName').value.trim();
+      const val = document.getElementById('kValue').value.trim();
+      const credits = parseFloat(document.getElementById('kCredits').value) || 5;
+      if (!name || !val) { toast('Name ane Key banne nakho!', 'err'); return; }
+      if (!val.startsWith('sk-')) { toast('Invalid key — sk- thi sharu thavu joie!', 'err'); return; }
+      const now = new Date();
+      const expiry = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
+      keys.push({ id: Date.now(), name, value: val, total: credits, used: 0, status: 'untested', added: now.toLocaleDateString('en-IN'), addedTs: now.getTime(), expiryTs: expiry.getTime() });
+      if (activeIdx === -1) activeIdx = 0;
+      save(); render();
+      document.getElementById('kName').value = '';
+      document.getElementById('kValue').value = '';
+      log(`Key added: ${name} (expires ${expiry.toLocaleDateString('en-IN')})`, 'ok');
+      toast(`✅ ${name} added!`);
+    }
+
+    // ── Delete ──
+    function deleteKey(id) {
+      const i = keys.findIndex(k => k.id === id);
+      const name = keys[i].name;
+      keys.splice(i, 1);
+      if (activeIdx >= keys.length) activeIdx = keys.length - 1;
+      if (keys.length === 0) activeIdx = -1;
+      save(); render();
+      log(`Deleted: ${name}`, 'warn');
+    }
+
+    // ── Set Active ──
+    function setActive(id) {
+      const i = keys.findIndex(k => k.id === id);
+      if (i === -1) return;
+      activeIdx = i;
+      save(); render();
+      log(`Active: ${keys[i].name}`, 'info');
+      toast(`⚡ Active: ${keys[i].name}`);
+    }
+
+    // ── Rotate ──
+    function rotateNext() {
+      if (!keys.length) { toast('Keys nathi!', 'err'); return; }
+      let next = (activeIdx + 1) % keys.length;
+      let tries = 0;
+      while ((keys[next].status === 'depleted' || keys[next].status === 'invalid') && tries < keys.length) { next = (next + 1) % keys.length; tries++; }
+      activeIdx = next;
+      save(); render();
+      log(`Rotated → ${keys[next].name}`, 'info');
+      toast(`⟳ ${keys[next].name} pe switch!`);
+    }
+
+    function autoSelectActive() { for (let i = 0; i < keys.length; i++) { if (pct(keys[i]) > 0) { activeIdx = i; save(); return; } } }
+
+    // ── API Test ──
+    async function testKey(id) {
+      const k = keys.find(k => k.id === id);
+      if (!k) return;
+      k.status = 'testing'; render();
+      log(`Testing: ${k.name}...`, 'info');
+      try {
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-api-key': k.value, 'anthropic-version': '2023-06-01' },
+          body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 10, messages: [{ role: 'user', content: 'Hi' }] })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          k.status = 'valid';
+          log(`✅ VALID: ${k.name}`, 'ok');
+          toast(`✅ ${k.name} — Valid!`);
+          notify('Key Valid!', `${k.name} working che!`);
+        } else if (data?.error?.message?.toLowerCase().includes('credit') || data?.error?.message?.toLowerCase().includes('balance')) {
+          k.status = 'depleted';
+          log(`⛔ DEPLETED: ${k.name}`, 'err');
+          toast(`⛔ ${k.name} khatam!`, 'err');
+          notify('Credits Khatam!', `${k.name} credits nathi!`);
+          if (autoRotate) rotateNext();
+        } else if (res.status === 401) {
+          k.status = 'invalid';
+          log(`❌ INVALID: ${k.name}`, 'err');
+          toast(`❌ ${k.name} invalid key!`, 'err');
+        } else {
+          k.status = 'error';
+          log(`⚠️ ERROR: ${k.name} — ${data?.error?.type || '?'}`, 'warn');
+        }
+      } catch (e) {
+        k.status = 'error';
+        log(`❌ Network/CORS error: ${k.name}`, 'err');
+        toast('⚠️ CORS error — Vercel deploy karo!', 'warn');
+      }
+      save(); render();
+    }
+    async function testActive() { if (activeIdx < 0 || !keys[activeIdx]) { toast('No active!', 'err'); return; } await testKey(keys[activeIdx].id); }
+    async function testAllKeys() {
+      if (!keys.length) { toast('Keys nathi!', 'err'); return; }
+      toast('🧪 Testing all...');
+      for (const k of keys) { await testKey(k.id); await new Promise(r => setTimeout(r, 600)); }
+      log('All tested!', 'ok');
+      toast('✅ All keys tested!');
+    }
+
+    // ── Copy ──
+    function copyActive() {
+      if (activeIdx < 0 || !keys[activeIdx]) { toast('No active key!', 'err'); return; }
+      const txt = keys[activeIdx].value;
+      if (navigator.clipboard) { navigator.clipboard.writeText(txt).then(() => { log(`Copied: ${keys[activeIdx].name}`, 'ok'); toast('📋 Copied! Cline ma paste karo.'); }); }
+      else { const ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); toast('📋 Copied!'); }
+    }
+
+    // ── Export/Import ──
+    function getExportData() {
+      return JSON.stringify({ version: 3, exported: new Date().toISOString(), keys: keys.map(k => ({ name: k.name, value: k.value, total: k.total, used: k.used, status: k.status, added: k.added, addedTs: k.addedTs, expiryTs: k.expiryTs })) }, null, 2);
+    }
+    function refreshExport() { document.getElementById('exportArea').value = getExportData(); }
+    function exportKeys() {
+      const blob = new Blob([getExportData()], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `api-vault-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      log('Keys exported!', 'ok');
+      toast('📥 JSON backup downloaded!');
+    }
+    function copyExport() {
+      const txt = getExportData();
+      if (navigator.clipboard) { navigator.clipboard.writeText(txt).then(() => toast('📋 Export copied!')); }
+      else { const ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); toast('📋 Copied!'); }
+    }
+    function importKeys() {
+      try {
+        const raw = document.getElementById('importArea').value.trim();
+        if (!raw) { toast('Koi data nathi!', 'err'); return; }
+        const data = JSON.parse(raw);
+        if (!data.keys || !Array.isArray(data.keys)) throw new Error('Invalid format');
+        let added = 0;
+        for (const k of data.keys) {
+          if (keys.length >= 15) break;
+          if (!k.name || !k.value) continue;
+          if (keys.find(e => e.value === k.value)) continue; // Skip duplicates
+          keys.push({ id: Date.now() + Math.random(), name: k.name, value: k.value, total: k.total || 5, used: k.used || 0, status: k.status || 'untested', added: k.added || new Date().toLocaleDateString('en-IN'), addedTs: k.addedTs || Date.now(), expiryTs: k.expiryTs || (Date.now() + 14 * 24 * 60 * 60 * 1000) });
+          added++;
+        }
+        if (activeIdx === -1 && keys.length > 0) activeIdx = 0;
+        save(); render();
+        log(`Imported ${added} keys!`, 'ok');
+        toast(`✅ ${added} keys imported!`);
+        document.getElementById('importArea').value = '';
+      } catch (e) { toast('Invalid JSON!', 'err'); log('Import failed: ' + e.message, 'err'); }
+    }
+
+    // ── Charts ──
+    function buildCharts() {
+      const textColor = isDark ? '#8892a4' : '#718096';
+      const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.08)';
+      // Credit chart
+      if (charts.credit) { charts.credit.destroy(); }
+      const cc = document.getElementById('creditChart').getContext('2d');
+      charts.credit = new Chart(cc, {
+        type: 'bar',
+        data: {
+          labels: keys.map(k => k.name),
+          datasets: [{
+            label: 'Credit Remaining %',
+            data: keys.map(k => pct(k).toFixed(1)),
+            backgroundColor: keys.map(k => { const p = pct(k); return p > threshold ? 'rgba(0,245,160,0.6)' : p > 0 ? 'rgba(245,196,0,0.6)' : 'rgba(255,77,109,0.6)'; }),
+            borderColor: keys.map(k => { const p = pct(k); return p > threshold ? '#00f5a0' : p > 0 ? '#f5c400' : '#ff4d6d'; }),
+            borderWidth: 1, borderRadius: 5
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: textColor, font: { family: 'JetBrains Mono', size: 10 } }, grid: { color: gridColor } }, y: { max: 100, ticks: { color: textColor, font: { family: 'JetBrains Mono', size: 10 }, callback: v => v + '%' }, grid: { color: gridColor } } } }
+      });
+      // Expiry chart
+      if (charts.expiry) { charts.expiry.destroy(); }
+      const ec = document.getElementById('expiryChart').getContext('2d');
+      charts.expiry = new Chart(ec, {
+        type: 'bar',
+        data: {
+          labels: keys.map(k => k.name),
+          datasets: [{
+            label: 'Days Remaining',
+            data: keys.map(k => Math.max(0, daysLeft(k))),
+            backgroundColor: keys.map(k => { const d = daysLeft(k); return d <= 0 ? 'rgba(255,77,109,0.6)' : d <= expiryWarn ? 'rgba(245,196,0,0.6)' : 'rgba(0,200,245,0.6)'; }),
+            borderColor: keys.map(k => { const d = daysLeft(k); return d <= 0 ? '#ff4d6d' : d <= expiryWarn ? '#f5c400' : '#00c8f5'; }),
+            borderWidth: 1, borderRadius: 5
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: textColor, font: { family: 'JetBrains Mono', size: 10 } }, grid: { color: gridColor } }, y: { ticks: { color: textColor, font: { family: 'JetBrains Mono', size: 10 }, callback: v => v + 'd' }, grid: { color: gridColor } } } }
+      });
+    }
+
+    // ── Expiry Panel ──
+    function renderExpiry() {
+      const grid = document.getElementById('expiryGrid');
+      if (!keys.length) { grid.innerHTML = '<div class="empty-state">Keys add karo!</div>'; return; }
+      grid.innerHTML = keys.map(k => {
+        const d = daysLeft(k);
+        const pctd = Math.max(0, Math.min(100, (d / 14) * 100));
+        const cls = d <= 0 ? 'exp-danger' : d <= expiryWarn ? 'exp-warn' : 'exp-ok';
+        const fillColor = d <= 0 ? 'var(--danger)' : d <= expiryWarn ? 'var(--warn)' : 'var(--accent)';
+        const dayText = d <= 0 ? '⛔ Expired' : d === 1 ? '1 day left!' : `${d} days`;
+        const dayColor = d <= 0 ? 'sv-r' : d <= expiryWarn ? 'sv-y' : 'sv-g';
+        return `<div class="expiry-card ${cls}">
       <div class="exp-name">${k.name}</div>
       <div class="exp-days ${dayColor}">${dayText}</div>
       <div class="exp-date">Added: ${k.added}</div>
       <div class="exp-date">Expires: ${new Date(k.expiryTs).toLocaleDateString('en-IN')}</div>
       <div class="exp-bar"><div class="exp-bar-fill" style="width:${pctd}%;background:${fillColor}"></div></div>
     </div>`;
-  }).join('');
-}
+      }).join('');
+    }
 
-// ── Helpers ──
-function pct(k) { return k.total === 0 ? 0 : Math.max(0, 100 - (k.used / k.total * 100)); }
-function daysLeft(k) { return k.expiryTs ? Math.ceil((k.expiryTs - Date.now()) / (1000 * 60 * 60 * 24)) : 14; }
-function notify(title, body) { if (notifOn && Notification.permission === 'granted') new Notification(title, { body }); }
+    // ── Helpers ──
+    function pct(k) { return k.total === 0 ? 0 : Math.max(0, 100 - (k.used / k.total * 100)); }
+    function daysLeft(k) { return k.expiryTs ? Math.ceil((k.expiryTs - Date.now()) / (1000 * 60 * 60 * 24)) : 14; }
+    function notify(title, body) { if (notifOn && Notification.permission === 'granted') new Notification(title, { body }); }
 
-// ── Toggles ──
-function toggleNotif() {
-  if (!notifOn) { Notification.requestPermission().then(p => { if (p === 'granted') { notifOn = true; localStorage.setItem('av3_notif','true'); document.getElementById('notifToggle').classList.add('on'); document.getElementById('notifText').textContent='ON'; toast('🔔 ON!'); } else toast('Permission denied!','err'); }); }
-  else { notifOn = false; localStorage.setItem('av3_notif','false'); document.getElementById('notifToggle').classList.remove('on'); document.getElementById('notifText').textContent='OFF'; toast('🔕 OFF','warn'); }
-}
-function toggleAuto() { autoRotate=!autoRotate; localStorage.setItem('av3_auto',autoRotate); document.getElementById('autoToggle').classList.toggle('on',autoRotate); document.getElementById('autoText').textContent=autoRotate?'ON':'OFF'; toast(autoRotate?'✅ Auto rotate ON':'⚠️ OFF','warn'); }
-function saveSettings() { threshold=parseInt(document.getElementById('threshold').value)||20; expiryWarn=parseInt(document.getElementById('expiryWarn').value)||3; localStorage.setItem('av3_threshold',threshold); localStorage.setItem('av3_expwarn',expiryWarn); toast(`✅ Saved!`); render(); }
-function clearAll() { if(!confirm('Badha keys delete?')) return; keys=[]; activeIdx=-1; save(); render(); toast('Cleared!','warn'); }
+    // ── Toggles ──
+    function toggleNotif() {
+      if (!notifOn) { Notification.requestPermission().then(p => { if (p === 'granted') { notifOn = true; localStorage.setItem('av3_notif', 'true'); document.getElementById('notifToggle').classList.add('on'); document.getElementById('notifText').textContent = 'ON'; toast('🔔 ON!'); } else toast('Permission denied!', 'err'); }); }
+      else { notifOn = false; localStorage.setItem('av3_notif', 'false'); document.getElementById('notifToggle').classList.remove('on'); document.getElementById('notifText').textContent = 'OFF'; toast('🔕 OFF', 'warn'); }
+    }
+    function toggleAuto() { autoRotate = !autoRotate; localStorage.setItem('av3_auto', autoRotate); document.getElementById('autoToggle').classList.toggle('on', autoRotate); document.getElementById('autoText').textContent = autoRotate ? 'ON' : 'OFF'; toast(autoRotate ? '✅ Auto rotate ON' : '⚠️ OFF', 'warn'); }
+    function saveSettings() { threshold = parseInt(document.getElementById('threshold').value) || 20; expiryWarn = parseInt(document.getElementById('expiryWarn').value) || 3; localStorage.setItem('av3_threshold', threshold); localStorage.setItem('av3_expwarn', expiryWarn); toast(`✅ Saved!`); render(); }
+    function clearAll() { if (!confirm('Badha keys delete?')) return; keys = []; activeIdx = -1; save(); render(); toast('Cleared!', 'warn'); }
 
-// ── Log ──
-function log(msg, type='') { const b=document.getElementById('logBody'); const t=new Date().toLocaleTimeString('en',{hour12:false}); const d=document.createElement('div'); d.className='log-entry'; d.innerHTML=`<span class="log-time">${t}</span><span class="log-${type||'info'}">${msg}</span>`; b.prepend(d); while(b.children.length>80)b.removeChild(b.lastChild); }
-function clearLog() { document.getElementById('logBody').innerHTML=''; }
+    // ── Log ──
+    function log(msg, type = '') { const b = document.getElementById('logBody'); const t = new Date().toLocaleTimeString('en', { hour12: false }); const d = document.createElement('div'); d.className = 'log-entry'; d.innerHTML = `<span class="log-time">${t}</span><span class="log-${type || 'info'}">${msg}</span>`; b.prepend(d); while (b.children.length > 80) b.removeChild(b.lastChild); }
+    function clearLog() { document.getElementById('logBody').innerHTML = ''; }
 
-// ── Toast ──
-let tT;
-function toast(msg, type='') { const el=document.getElementById('toast'); el.textContent=msg; el.className=`toast show${type==='warn'?' t-warn':type==='err'?' t-err':''}`; clearTimeout(tT); tT=setTimeout(()=>el.classList.remove('show'),3000); }
+    // ── Toast ──
+    let tT;
+    function toast(msg, type = '') { const el = document.getElementById('toast'); el.textContent = msg; el.className = `toast show${type === 'warn' ? ' t-warn' : type === 'err' ? ' t-err' : ''}`; clearTimeout(tT); tT = setTimeout(() => el.classList.remove('show'), 3000); }
 
-// ── Render ──
-function render() {
-  const ak = keys[activeIdx];
-  // Active display
-  document.getElementById('activeDisplay').textContent = ak ? ak.value.slice(0,16)+'••••••••••••'+ak.value.slice(-4) : '— Koi key active nathi —';
-  // Stats
-  document.getElementById('sTotal').textContent = keys.length;
-  document.getElementById('sValid').textContent = keys.filter(k=>k.status==='valid').length;
-  document.getElementById('sLow').textContent = keys.filter(k=>{const p=pct(k);return p>0&&p<=threshold}).length;
-  document.getElementById('sDep').textContent = keys.filter(k=>k.status==='depleted'||k.status==='invalid'||pct(k)===0).length;
-  document.getElementById('sExp').textContent = keys.filter(k=>daysLeft(k)<=expiryWarn&&daysLeft(k)>0).length;
-  document.getElementById('kCount').textContent = keys.length;
-  // Key list
-  const list = document.getElementById('keyList');
-  if (!keys.length) { list.innerHTML='<div class="empty-state">Koi key nathi.<br>Upar thi ProtonMail API key add karo! 👆<br><small>console.anthropic.com → API Keys → Create Key</small></div>'; return; }
-  list.innerHTML = keys.map((k,i) => {
-    const p=pct(k), isAct=i===activeIdx, d=daysLeft(k);
-    const fillC=p>threshold?'fill-g':p>0?'fill-y':'fill-r';
-    const stC=isAct?'p-active':k.status==='testing'?'p-testing':k.status==='depleted'||k.status==='invalid'?'p-empty':p<=threshold&&p>0?'p-low':k.status==='valid'?'p-active':'p-ready';
-    const stT=isAct?'⚡ ACTIVE':k.status==='testing'?'⏳...':k.status==='depleted'?'⛔ EMPTY':k.status==='invalid'?'❌ INVALID':k.status==='valid'?'✅ VALID':p<=threshold&&p>0?'⚠️ LOW':'○ UNTESTED';
-    const expC=d<=0?'expiry-dead':d<=expiryWarn?'expiry-warn':'expiry-ok';
-    const expT=d<=0?'Expired!':d===1?'1d left!':d+'d left';
-    return `<div class="key-row${isAct?' is-active':''}${(k.status==='depleted'||k.status==='invalid')?' is-dead':''}">
-      <div class="k-num">${i+1}</div>
-      <div><div class="k-name-main">${k.name}</div><div class="k-name-sub">$${(k.total-k.used).toFixed(2)} baki</div></div>
+    // ── Render ──
+    function render() {
+      const ak = keys[activeIdx];
+      // Active display
+      document.getElementById('activeDisplay').textContent = ak ? ak.value.slice(0, 16) + '••••••••••••' + ak.value.slice(-4) : '— Koi key active nathi —';
+      // Stats
+      document.getElementById('sTotal').textContent = keys.length;
+      document.getElementById('sValid').textContent = keys.filter(k => k.status === 'valid').length;
+      document.getElementById('sLow').textContent = keys.filter(k => { const p = pct(k); return p > 0 && p <= threshold }).length;
+      document.getElementById('sDep').textContent = keys.filter(k => k.status === 'depleted' || k.status === 'invalid' || pct(k) === 0).length;
+      document.getElementById('sExp').textContent = keys.filter(k => daysLeft(k) <= expiryWarn && daysLeft(k) > 0).length;
+      document.getElementById('kCount').textContent = keys.length;
+      // Key list
+      const list = document.getElementById('keyList');
+      if (!keys.length) { list.innerHTML = '<div class="empty-state">Koi key nathi.<br>Upar thi ProtonMail API key add karo! 👆<br><small>console.anthropic.com → API Keys → Create Key</small></div>'; return; }
+      list.innerHTML = keys.map((k, i) => {
+        const p = pct(k), isAct = i === activeIdx, d = daysLeft(k);
+        const fillC = p > threshold ? 'fill-g' : p > 0 ? 'fill-y' : 'fill-r';
+        const stC = isAct ? 'p-active' : k.status === 'testing' ? 'p-testing' : k.status === 'depleted' || k.status === 'invalid' ? 'p-empty' : p <= threshold && p > 0 ? 'p-low' : k.status === 'valid' ? 'p-active' : 'p-ready';
+        const stT = isAct ? '⚡ ACTIVE' : k.status === 'testing' ? '⏳...' : k.status === 'depleted' ? '⛔ EMPTY' : k.status === 'invalid' ? '❌ INVALID' : k.status === 'valid' ? '✅ VALID' : p <= threshold && p > 0 ? '⚠️ LOW' : '○ UNTESTED';
+        const expC = d <= 0 ? 'expiry-dead' : d <= expiryWarn ? 'expiry-warn' : 'expiry-ok';
+        const expT = d <= 0 ? 'Expired!' : d === 1 ? '1d left!' : d + 'd left';
+        return `<div class="key-row${isAct ? ' is-active' : ''}${(k.status === 'depleted' || k.status === 'invalid') ? ' is-dead' : ''}">
+      <div class="k-num">${i + 1}</div>
+      <div><div class="k-name-main">${k.name}</div><div class="k-name-sub">$${(k.total - k.used).toFixed(2)} baki</div></div>
       <div class="k-bar">
         <div class="k-bar-top"><span>${p.toFixed(0)}%</span><span>$${k.total}</span></div>
         <div class="k-bar-track"><div class="k-bar-fill ${fillC}" style="width:${p}%"></div></div>
@@ -713,22 +1565,23 @@ function render() {
       <div><span class="status-pill ${stC}">${stT}</span></div>
       <div class="k-actions">
         <button class="icon-btn" onclick="testKey(${k.id})" title="Test">🧪</button>
-        ${!isAct&&k.status!=='depleted'&&k.status!=='invalid'?`<button class="icon-btn" onclick="setActive(${k.id})" title="Set Active">⚡</button>`:''}
+        ${!isAct && k.status !== 'depleted' && k.status !== 'invalid' ? `<button class="icon-btn" onclick="setActive(${k.id})" title="Set Active">⚡</button>` : ''}
         <button class="icon-btn del" onclick="deleteKey(${k.id})" title="Delete">🗑</button>
       </div>
     </div>`;
-  }).join('');
+      }).join('');
 
-  // Check expiry alerts
-  keys.forEach(k => {
-    const d = daysLeft(k);
-    if (d === expiryWarn) { notify('Key Expire Thavas!', `${k.name} ${d} din ma expire thase!`); }
-    if (d <= 0 && k.status !== 'expired') { k.status = 'expired'; }
-  });
-}
+      // Check expiry alerts
+      keys.forEach(k => {
+        const d = daysLeft(k);
+        if (d === expiryWarn) { notify('Key Expire Thavas!', `${k.name} ${d} din ma expire thase!`); }
+        if (d <= 0 && k.status !== 'expired') { k.status = 'expired'; }
+      });
+    }
 
-// ── Auto check expiry every hour ──
-setInterval(() => { render(); log('Expiry check done', 'info'); }, 60 * 60 * 1000);
-</script>
+    // ── Auto check expiry every hour ──
+    setInterval(() => { render(); log('Expiry check done', 'info'); }, 60 * 60 * 1000);
+  </script>
 </body>
+
 </html>
